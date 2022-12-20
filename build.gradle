@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+group 'me.zax71.lightHub'
+version '0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.Minestom.Minestom:Minestom:d7feed23c8'
+    implementation 'com.github.simplix-softworks:simplixstorage:3.2.4'
+    implementation "net.kyori:adventure-text-minimessage:4.12.0"
+}
+
+// Code sample, be sure to modify the 'Main-Class' value
+// based on your application
+jar {
+    manifest {
+        attributes 'Main-Class': 'me.zax71.lightHub.Main',
+                "Multi-Release": true
+
+    }
+}
