@@ -31,5 +31,10 @@ object GameMenu {
 
         // Add items to inv
         inventory!!.copyContents(itemStacks)
+
+        inventory!!.addInventoryCondition { player, slot, _, inventoryConditionResult ->
+            // Moving items is bad
+            inventoryConditionResult.isCancel = true
+        }
     }
 }

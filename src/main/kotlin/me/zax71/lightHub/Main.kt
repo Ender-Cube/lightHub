@@ -17,7 +17,6 @@ var config: Yaml = Yaml(
     // main()::class.java.getResourceAsStream("/config.yml")
 )
 fun main() {
-    println("Hello World")
     // Initialisation
     val minecraftServer = MinecraftServer.init()
 

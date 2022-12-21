@@ -29,6 +29,10 @@ dependencies {
 
     // Config util
     implementation("com.github.simplix-softworks:simplixstorage:3.2.4")
+
+    // Logging util
+    implementation("org.tinylog:tinylog-api-kotlin:2.5.0")
+    implementation("org.tinylog:tinylog-impl:2.5.0")
 }
 
 tasks.withType<KotlinCompile> {

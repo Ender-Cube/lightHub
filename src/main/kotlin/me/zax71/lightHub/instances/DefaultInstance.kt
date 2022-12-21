@@ -1,11 +1,13 @@
 package me.zax71.lightHub.instances
 
+import me.zax71.lightHub.config
 import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.AnvilLoader
 import net.minestom.server.instance.Instance
 import net.minestom.server.utils.NamespaceID
 import net.minestom.server.world.DimensionType
-import java.nio.file.Path
+import org.tinylog.Logger
+import java.io.File
 
 object DefaultInstance {
     var DEFAULT_DIM: DimensionType? = null
@@ -25,12 +27,17 @@ object DefaultInstance {
 
         MinecraftServer.getDimensionTypeManager().addDimension(DEFAULT_DIM!!)
 
+        // Error if world is not found
+        val worldPath = config.getOrSetDefault("world.path", "worlds/hub")
+        if (!File(worldPath).isDirectory) {
+            Logger.error { "Failed to load world at $worldPath" }
+        }
 
         INSTANCE = MinecraftServer
             .getInstanceManager()
             .createInstanceContainer(
                 DEFAULT_DIM!!,
-                AnvilLoader(Path.of("worlds/hub"))
+                AnvilLoader(worldPath)
             )
         INSTANCE!!.enableAutoChunkLoad(true)
     }
