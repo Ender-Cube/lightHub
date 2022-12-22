@@ -1,6 +1,7 @@
 package me.zax71.lightHub.listeners
 
 import me.zax71.lightHub.instances.DefaultInstance
+import me.zax71.lightHub.inventories.GameMenu
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.minestom.server.coordinate.Pos
@@ -40,7 +41,15 @@ class PlayerLogin : EventListener<PlayerLoginEvent> {
             .displayName(Component.text("Navigator").decoration(TextDecoration.ITALIC, false)).build()
         inventory.setItemStack(4, compass)
 
+        player.inventory.addInventoryCondition { playerInventory, slot, _, inventoryConditionResult ->
+            // Moving items is bad
+            inventoryConditionResult.isCancel = true
 
+            if (slot == 4) {
+                playerInventory.openInventory(GameMenu.inventory!!)
+            }
+
+        }
         return EventListener.Result.SUCCESS
     }
 }

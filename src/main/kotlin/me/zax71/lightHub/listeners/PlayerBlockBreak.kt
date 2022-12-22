@@ -31,7 +31,6 @@ class PlayerBlockBreak : EventListener<PlayerBlockBreakEvent> {
         player.sendMessage(message)
 
 
-        player.openInventory(GameMenu.inventory!!)
 
         return EventListener.Result.SUCCESS
     }

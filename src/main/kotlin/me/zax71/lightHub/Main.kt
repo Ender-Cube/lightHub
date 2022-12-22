@@ -4,6 +4,7 @@ import de.leonhard.storage.Yaml
 import me.zax71.lightHub.blocks.Sign
 import me.zax71.lightHub.listener.PlayerBlockBreak
 import me.zax71.lightHub.listeners.PlayerLogin
+import me.zax71.lightHub.listeners.PlayerUseItem
 import net.minestom.server.MinecraftServer
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
@@ -26,6 +27,7 @@ fun main() {
         entityNode
             .addListener(PlayerLogin())
             .addListener(PlayerBlockBreak())
+            .addListener(PlayerUseItem())
         globalEventHandler.addChild(entityNode)
 
 
