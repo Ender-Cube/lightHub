@@ -15,7 +15,6 @@ import net.minestom.server.utils.NamespaceID
 var config: Yaml = Yaml(
     "config.yml",
     System.getProperty("user.dir"),
-    // main()::class.java.getResourceAsStream("/config.yml")
 )
 fun main() {
     // Initialisation
