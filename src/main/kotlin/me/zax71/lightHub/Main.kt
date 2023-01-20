@@ -38,5 +38,6 @@ fun main() {
     MojangAuth.init()
 
     // Start the server
+    // Uses port 25565 by default as this is the port Docker uses, only useful to configure when outside a docker container
     minecraftServer.start("0.0.0.0", config.getOrSetDefault("port", 25565))
 }

@@ -41,15 +41,6 @@ class PlayerLogin : EventListener<PlayerLoginEvent> {
             .displayName(Component.text("Navigator").decoration(TextDecoration.ITALIC, false)).build()
         inventory.setItemStack(4, compass)
 
-        player.inventory.addInventoryCondition { playerInventory, slot, _, inventoryConditionResult ->
-            // Moving items is bad
-            inventoryConditionResult.isCancel = true
-
-            if (slot == 4) {
-                playerInventory.openInventory(GameMenu.inventory!!)
-            }
-
-        }
         return EventListener.Result.SUCCESS
     }
 }
