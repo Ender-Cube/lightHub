@@ -36,6 +36,9 @@ dependencies {
     // Logger
     implementation("ch.qos.logback:logback-classic:1.3.3")
 
+    // Minestom needs this for some reason to send players to Velocity servers 🤷
+    implementation("com.google.guava:guava:31.1-jre")
+
 }
 
 java {

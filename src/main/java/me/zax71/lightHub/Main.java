@@ -7,6 +7,9 @@ import me.zax71.lightHub.blocks.Skull;
 import me.zax71.lightHub.commands.arguments.PlayerArgument;
 import me.zax71.lightHub.listeners.PlayerBlockBreak;
 import me.zax71.lightHub.listeners.PlayerLogin;
+import me.zax71.lightHub.utils.ConfigUtils;
+import me.zax71.lightHub.utils.FullbrightDimension;
+import me.zax71.lightHub.utils.NPC;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.entity.Player;
@@ -14,7 +17,12 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.entity.EntityAttackEvent;
+import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.extras.MojangAuth;
+import net.minestom.server.extras.velocity.VelocityProxy;
+import net.minestom.server.instance.AnvilLoader;
+import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.utils.NamespaceID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +31,15 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import static me.zax71.lightHub.utils.ConfigUtils.*;
+import static me.zax71.lightHub.utils.NPC.spawnNPCs;
 
 public class Main {
+    public static InstanceContainer HUB;
     public static CommentedConfigurationNode CONFIG;
 
     public static HoconConfigurationLoader LOADER;
@@ -38,7 +50,6 @@ public class Main {
 
     public static void main(String[] args) {
         initConfig();
-
         // Server Initialization
         MinecraftServer minecraftServer = MinecraftServer.init();
 
@@ -54,12 +65,26 @@ public class Main {
         MinecraftServer.getBlockManager().registerHandler(NamespaceID.from("minecraft:sign"), Sign::new);
         MinecraftServer.getBlockManager().registerHandler(NamespaceID.from("minecraft:skull"), Skull::new);
 
-        // Offline mode bad
-        MojangAuth.init();
+
+        switch (getOrSetDefault(CONFIG.node("mode"), "ONLINE")) {
+            case "ONLINE" -> MojangAuth.init();
+            case "VELOCITY" -> {
+                String velocitySecret = getOrSetDefault(CONFIG.node("velocitySecret"), "");
+                if (!Objects.equals(velocitySecret, "")) {
+                    VelocityProxy.enable(velocitySecret);
+                }
+            }
+        }
+
 
         // Start the server on port 25565
         minecraftServer.start("0.0.0.0", 25565);
         initCommands();
+        initWorlds();
+        for (NPC npc : NPC.spawnNPCs(HUB)) {
+            HUB.eventNode().addListener(EntityAttackEvent.class, npc::handle)
+                    .addListener(PlayerEntityInteractEvent.class, npc::handle);
+        }
 
     }
 
@@ -77,6 +102,22 @@ public class Main {
                 // .commandInstance(new Command())
                 .argument(Player.class, new PlayerArgument(MinecraftServer.getServer()))
                 .register();
+    }
+
+    private static void initWorlds() {
+        // Fail and stop server if hub doesn't exist
+        if (!Files.exists(getPath("config/worlds/hub"))) {
+            logger.error("Missing HUB world, please place an Anvil world in ./config/worlds/hub and restart the server");
+            MinecraftServer.stopCleanly();
+            return;
+        }
+
+        // Load hub if it exists
+        HUB = MinecraftServer.getInstanceManager().createInstanceContainer(
+                FullbrightDimension.INSTANCE,
+                new AnvilLoader(getPath("config/worlds/hub"))
+        );
+        HUB.setTimeRate(0);
     }
 
 }

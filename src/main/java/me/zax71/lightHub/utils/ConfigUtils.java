@@ -30,6 +30,7 @@ public class ConfigUtils {
         if (node.getString() == null) {
             node.raw(value);
             logger.info("Setting config");
+            saveConfig();
             return value;
         }
 
@@ -72,7 +73,7 @@ public class ConfigUtils {
     public static void initConfig() {
 
         // Create config directories
-        if (!Files.exists(getPath("config/worlds/maps"))) {
+        if (!Files.exists(getPath("config/worlds"))) {
             logger.info("Creating configuration files");
 
             try {
