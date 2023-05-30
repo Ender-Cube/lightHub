@@ -1,2 +1,3 @@
-rootProject.name = "EndercubeTemplate"
+
+rootProject.name = "lightHub"
 
