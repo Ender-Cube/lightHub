@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.utils;
+package me.zax71.lightHub.utils;
 
 // Credit: https://www.spigotmc.org/threads/free-code-sending-perfectly-centered-chat-message.95872/
 

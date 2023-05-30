@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.utils;
+package me.zax71.lightHub.utils;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.utils.NamespaceID;

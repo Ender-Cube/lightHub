@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.utils;
+package me.zax71.lightHub.utils;
 
 import io.leangen.geantyref.TypeToken;
 import net.minestom.server.MinecraftServer;
@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.zax71.EndercubeTemplate.Main.*;
+import static me.zax71.lightHub.Main.*;
 
 public class ConfigUtils {
     public static void saveConfig() {

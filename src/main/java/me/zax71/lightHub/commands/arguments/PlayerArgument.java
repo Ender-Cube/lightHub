@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.commands.arguments;
+package me.zax71.lightHub.commands.arguments;
 
 import dev.rollczi.litecommands.argument.ArgumentName;
 import dev.rollczi.litecommands.argument.simple.OneArgument;

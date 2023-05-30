@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.blocks;
+package me.zax71.lightHub.blocks;
 
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.tag.Tag;

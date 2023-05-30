@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.listeners;
+package me.zax71.lightHub.listeners;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -8,9 +8,9 @@ import net.minestom.server.event.player.PlayerBlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 
-import static me.zax71.EndercubeTemplate.Main.CONFIG;
-import static me.zax71.EndercubeTemplate.utils.ConfigUtils.getOrSetDefault;
-import static me.zax71.EndercubeTemplate.utils.ConfigUtils.saveConfig;
+import static me.zax71.lightHub.Main.CONFIG;
+import static me.zax71.lightHub.utils.ConfigUtils.getOrSetDefault;
+import static me.zax71.lightHub.utils.ConfigUtils.saveConfig;
 
 // Stops players from breaking blocks in all worlds
 public class PlayerBlockBreak implements EventListener<PlayerBlockBreakEvent> {

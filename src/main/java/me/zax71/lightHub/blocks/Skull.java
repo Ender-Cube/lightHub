@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.blocks;
+package me.zax71.lightHub.blocks;
 
 import net.kyori.adventure.key.Key;
 import net.minestom.server.instance.block.BlockHandler;

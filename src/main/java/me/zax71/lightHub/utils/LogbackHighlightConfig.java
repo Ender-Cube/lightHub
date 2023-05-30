@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.utils;
+package me.zax71.lightHub.utils;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;

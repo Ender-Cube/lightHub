@@ -1,4 +1,4 @@
-package me.zax71.EndercubeTemplate.listeners;
+package me.zax71.lightHub.listeners;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,7 +12,7 @@ import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 
-import static me.zax71.EndercubeTemplate.Main.logger;
+import static me.zax71.lightHub.Main.logger;
 
 
 public class PlayerLogin implements EventListener<PlayerLoginEvent> {

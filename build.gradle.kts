@@ -47,7 +47,7 @@ java {
 tasks {
     jar {
         manifest {
-            attributes["Main-Class"] = "me.zax71.EndercubeTemplate.Main"
+            attributes["Main-Class"] = "me.zax71.lightHub.Main"
         }
     }
     build {

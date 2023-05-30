@@ -1,12 +1,12 @@
-package me.zax71.EndercubeTemplate;
+package me.zax71.lightHub;
 
 import dev.rollczi.litecommands.LiteCommands;
 import dev.rollczi.litecommands.minestom.LiteMinestomFactory;
-import me.zax71.EndercubeTemplate.blocks.Sign;
-import me.zax71.EndercubeTemplate.blocks.Skull;
-import me.zax71.EndercubeTemplate.commands.arguments.PlayerArgument;
-import me.zax71.EndercubeTemplate.listeners.PlayerBlockBreak;
-import me.zax71.EndercubeTemplate.listeners.PlayerLogin;
+import me.zax71.lightHub.blocks.Sign;
+import me.zax71.lightHub.blocks.Skull;
+import me.zax71.lightHub.commands.arguments.PlayerArgument;
+import me.zax71.lightHub.listeners.PlayerBlockBreak;
+import me.zax71.lightHub.listeners.PlayerLogin;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.entity.Player;
@@ -15,7 +15,6 @@ import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.extras.MojangAuth;
-import net.minestom.server.instance.*;
 import net.minestom.server.utils.NamespaceID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
-import static me.zax71.EndercubeTemplate.utils.ConfigUtils.*;
+import static me.zax71.lightHub.utils.ConfigUtils.*;
 
 public class Main {
     public static CommentedConfigurationNode CONFIG;
