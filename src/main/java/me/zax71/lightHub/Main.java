@@ -66,10 +66,10 @@ public class Main {
         MinecraftServer.getBlockManager().registerHandler(NamespaceID.from("minecraft:skull"), Skull::new);
 
 
-        switch (getOrSetDefault(CONFIG.node("mode"), "ONLINE")) {
-            case "ONLINE" -> MojangAuth.init();
-            case "VELOCITY" -> {
-                String velocitySecret = getOrSetDefault(CONFIG.node("velocitySecret"), "");
+        switch (getOrSetDefault(CONFIG.node("connection", "mode"), "online")) {
+            case "online" -> MojangAuth.init();
+            case "velocity" -> {
+                String velocitySecret = getOrSetDefault(CONFIG.node("connection", "velocitySecret"), "");
                 if (!Objects.equals(velocitySecret, "")) {
                     VelocityProxy.enable(velocitySecret);
                 }
@@ -78,9 +78,10 @@ public class Main {
 
 
         // Start the server on port 25565
-        minecraftServer.start("0.0.0.0", 25565);
+        minecraftServer.start("0.0.0.0", Integer.parseInt(getOrSetDefault(CONFIG.node("connection", "port"), "25565")));
         initCommands();
         initWorlds();
+
         for (NPC npc : NPC.spawnNPCs(HUB)) {
             HUB.eventNode().addListener(EntityAttackEvent.class, npc::handle)
                     .addListener(PlayerEntityInteractEvent.class, npc::handle);
