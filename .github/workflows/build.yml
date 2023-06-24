@@ -27,5 +27,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: StomKor
+        name: lightHub
         path: build/libs/lightHub-*.*.*.jar
