@@ -82,6 +82,7 @@ public class Main {
         initCommands();
         initWorlds();
 
+        // Add event listener for click event on NPCs
         for (NPC npc : NPC.spawnNPCs(HUB)) {
             HUB.eventNode().addListener(EntityAttackEvent.class, npc::handle)
                     .addListener(PlayerEntityInteractEvent.class, npc::handle);

@@ -134,8 +134,10 @@ public final class NPC extends EntityCreature {
     private static void sendToServer(Player player, String server) {
         // https://github.com/Minestom/Minestom/discussions/1414#discussioncomment-3712097
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Connect");
-        out.writeUTF(server);
+        // out.writeUTF("Connect");
+        // out.writeUTF(server);
+        out.writeUTF("PlayMap");
+        out.writeUTF("easy-1");
         player.sendPacket(new PluginMessagePacket("BungeeCord", out.toByteArray()));
         logger.info("Sent " + player.getUsername() + " to " + server);
     }
