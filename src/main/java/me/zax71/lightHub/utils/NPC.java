@@ -136,9 +136,9 @@ public final class NPC extends EntityCreature {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         // out.writeUTF("Connect");
         // out.writeUTF(server);
-        out.writeUTF("PlayMap");
+        out.writeUTF("goto");
         out.writeUTF("easy-1");
-        player.sendPacket(new PluginMessagePacket("BungeeCord", out.toByteArray()));
+        player.sendPacket(new PluginMessagePacket("endercube:map-switch", out.toByteArray()));
         logger.info("Sent " + player.getUsername() + " to " + server);
     }
 
