@@ -7,7 +7,6 @@ import me.zax71.lightHub.blocks.Skull;
 import me.zax71.lightHub.commands.arguments.PlayerArgument;
 import me.zax71.lightHub.listeners.PlayerBlockBreak;
 import me.zax71.lightHub.listeners.PlayerLogin;
-import me.zax71.lightHub.utils.ConfigUtils;
 import me.zax71.lightHub.utils.FullbrightDimension;
 import me.zax71.lightHub.utils.NPC;
 import net.minestom.server.MinecraftServer;
@@ -26,6 +25,7 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.utils.NamespaceID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import static me.zax71.lightHub.utils.ConfigUtils.*;
-import static me.zax71.lightHub.utils.NPC.spawnNPCs;
+import static me.zax71.lightHub.utils.ConfigUtils.getOrSetDefault;
+import static me.zax71.lightHub.utils.ConfigUtils.initConfig;
 
 public class Main {
     public static InstanceContainer HUB;
@@ -50,7 +50,6 @@ public class Main {
     public static MqttClient MQTTClient = null;
 
     private static LiteCommands<CommandSender> liteCommands;
-
 
 
     public static void main(String[] args) {
@@ -116,9 +115,18 @@ public class Main {
         String broker = "tcp://localhost:1883";
         String clientID = "lightHub";
         MemoryPersistence persistence = new MemoryPersistence();
+
+        String topic = "endercube/gotoMap/" + "easy-1";
+
+        MqttMessage message = new MqttMessage("zax71".getBytes());
+        message.setQos(2);
+
+
         try {
             MQTTClient = new MqttClient(broker, clientID, persistence);
             MQTTClient.connect();
+
+            MQTTClient.publish(topic, message);
         } catch (MqttException exception) {
             logger.warn("reason " + exception.getReasonCode());
             logger.warn("msg " + exception.getMessage());
