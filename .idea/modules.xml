@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/EndercubeTemplate.main.iml" filepath="$PROJECT_DIR$/.idea/modules/EndercubeTemplate.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lightHub.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lightHub.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lightHub.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lightHub.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.zax71.lightHub.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.zax71.lightHub.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.zax71.lightHub.test.iml" filepath="$PROJECT_DIR$/.idea/modules/me.zax71.lightHub.test.iml" />
     </modules>
   </component>
 </project>

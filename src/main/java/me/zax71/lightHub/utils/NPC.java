@@ -1,7 +1,5 @@
 package me.zax71.lightHub.utils;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -13,15 +11,15 @@ import net.minestom.server.event.entity.EntityAttackEvent;
 import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
-import net.minestom.server.network.packet.server.play.PluginMessagePacket;
 import net.minestom.server.sound.SoundEvent;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static me.zax71.lightHub.Main.MQTTClient;
 import static me.zax71.lightHub.Main.logger;
 
 // https://gist.github.com/iam4722202468/36630043ca89e786bb6318e296f822f8
@@ -109,7 +107,8 @@ public final class NPC extends EntityCreature {
         }
 
         @Override
-        public void start() {}
+        public void start() {
+        }
 
         @Override
         public void tick(long time) {
@@ -128,27 +127,37 @@ public final class NPC extends EntityCreature {
         }
 
         @Override
-        public void end() {}
+        public void end() {
+        }
     }
 
-    private static void sendToServer(Player player, String server) {
-        // https://github.com/Minestom/Minestom/discussions/1414#discussioncomment-3712097
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        // out.writeUTF("Connect");
-        // out.writeUTF(server);
-        out.writeUTF("goto");
-        out.writeUTF("easy-1");
-        player.sendPacket(new PluginMessagePacket("endercube:map-switch", out.toByteArray()));
-        logger.info("Sent " + player.getUsername() + " to " + server);
+    private static void sendToMap(Player player, String map) {
+
+        String topic = "endercube/gotoMap/" + map;
+
+        MqttMessage message = new MqttMessage(player.getUsername().getBytes());
+        message.setQos(2);
+        try {
+            MQTTClient.publish(topic, message);
+        } catch (MqttException exception) {
+            logger.warn("reason " + exception.getReasonCode());
+            logger.warn("msg " + exception.getMessage());
+            logger.warn("loc " + exception.getLocalizedMessage());
+            logger.warn("cause " + exception.getCause());
+            logger.warn("excep " + exception);
+            exception.printStackTrace();
+        }
+
+        logger.info("Sent " + player.getUsername() + " to " + map);
     }
 
     public static List<NPC> spawnNPCs(@NotNull Instance instance) {
         return List.of(
                 new NPC("Parkour", PlayerSkin.fromUsername("CrimsonIsAkai"), instance, new Pos(0.5, 71, -5.5),
-                        player -> sendToServer(player, "parkour")),
+                        player -> sendToMap(player, "easy-1")),
 
                 new NPC("Spleef", PlayerSkin.fromUsername("Notch"), instance, new Pos(-2.5, 71, -5.5),
-                        player -> sendToServer(player, "spleef"))
+                        player -> sendToMap(player, "spleef"))
         );
     }
 }

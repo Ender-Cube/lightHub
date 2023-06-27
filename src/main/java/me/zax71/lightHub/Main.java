@@ -24,6 +24,9 @@ import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.AnvilLoader;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.utils.NamespaceID;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -44,8 +47,10 @@ public class Main {
 
     public static HoconConfigurationLoader LOADER;
     public static final Logger logger = LoggerFactory.getLogger(Main.class);
+    public static MqttClient MQTTClient = null;
 
     private static LiteCommands<CommandSender> liteCommands;
+
 
 
     public static void main(String[] args) {
@@ -81,6 +86,7 @@ public class Main {
         minecraftServer.start("0.0.0.0", Integer.parseInt(getOrSetDefault(CONFIG.node("connection", "port"), "25565")));
         initCommands();
         initWorlds();
+        initMQTT();
 
         // Add event listener for click event on NPCs
         for (NPC npc : NPC.spawnNPCs(HUB)) {
@@ -104,6 +110,24 @@ public class Main {
                 // .commandInstance(new Command())
                 .argument(Player.class, new PlayerArgument(MinecraftServer.getServer()))
                 .register();
+    }
+
+    private static void initMQTT() {
+        String broker = "tcp://localhost:1883";
+        String clientID = "lightHub";
+        MemoryPersistence persistence = new MemoryPersistence();
+        try {
+            MQTTClient = new MqttClient(broker, clientID, persistence);
+            MQTTClient.connect();
+        } catch (MqttException exception) {
+            logger.warn("reason " + exception.getReasonCode());
+            logger.warn("msg " + exception.getMessage());
+            logger.warn("loc " + exception.getLocalizedMessage());
+            logger.warn("cause " + exception.getCause());
+            logger.warn("excep " + exception);
+            exception.printStackTrace();
+        }
+
     }
 
     private static void initWorlds() {
