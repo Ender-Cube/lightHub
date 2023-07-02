@@ -36,9 +36,8 @@ dependencies {
     // Logger
     implementation("ch.qos.logback:logback-classic:1.3.3")
 
-    // MQTT
-    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.2")
-
+    // Redis (Jedis)
+    implementation("redis.clients:jedis:4.3.0")
 }
 
 java {

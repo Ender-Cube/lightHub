@@ -12,14 +12,15 @@ import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
 import net.minestom.server.sound.SoundEvent;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
-import static me.zax71.lightHub.Main.MQTTClient;
+import static me.zax71.lightHub.Main.REDIS;
 import static me.zax71.lightHub.Main.logger;
 
 // https://gist.github.com/iam4722202468/36630043ca89e786bb6318e296f822f8
@@ -133,21 +134,14 @@ public final class NPC extends EntityCreature {
 
     private static void sendToMap(Player player, String map) {
 
-        String topic = "endercube/gotoMap/" + map;
+        String channel = "endercube/proxy/map/switch";
+        Map<String, String> payload = new HashMap<>();
+        payload.put("player", player.getUuid().toString());
+        payload.put("map", map);
 
-        MqttMessage message = new MqttMessage(player.getUsername().getBytes());
-        message.setQos(2);
-        try {
-            MQTTClient.publish(topic, message);
-        } catch (MqttException exception) {
-            logger.warn("reason " + exception.getReasonCode());
-            logger.warn("msg " + exception.getMessage());
-            logger.warn("loc " + exception.getLocalizedMessage());
-            logger.warn("cause " + exception.getCause());
-            logger.warn("excep " + exception);
-            exception.printStackTrace();
-        }
-
+        REDIS.publish(channel, new JSONObject(payload).toString());
+        
+        logger.info("Sent" + new JSONObject(payload));
         logger.info("Sent " + player.getUsername() + " to " + map);
     }
 
