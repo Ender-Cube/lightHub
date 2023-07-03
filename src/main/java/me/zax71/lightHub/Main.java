@@ -46,8 +46,6 @@ public class Main {
     public static final Logger logger = LoggerFactory.getLogger(Main.class);
     public static Jedis REDIS;
 
-    private static LiteCommands<CommandSender> liteCommands;
-
 
     public static void main(String[] args) {
         initConfig();
@@ -107,7 +105,7 @@ public class Main {
     }
 
     private static void initCommands() {
-        liteCommands = LiteMinestomFactory.builder(MinecraftServer.getServer(), MinecraftServer.getCommandManager())
+        LiteMinestomFactory.builder(MinecraftServer.getServer(), MinecraftServer.getCommandManager())
                 // .commandInstance(new Command())
                 .argument(Player.class, new PlayerArgument(MinecraftServer.getServer()))
                 .register();
