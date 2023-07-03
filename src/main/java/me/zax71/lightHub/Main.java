@@ -44,7 +44,7 @@ public class Main {
 
     public static HoconConfigurationLoader LOADER;
     public static final Logger logger = LoggerFactory.getLogger(Main.class);
-    public static Jedis REDIS = new Jedis();
+    public static Jedis REDIS;
 
     private static LiteCommands<CommandSender> liteCommands;
 
@@ -82,6 +82,12 @@ public class Main {
         minecraftServer.start("0.0.0.0", Integer.parseInt(getOrSetDefault(CONFIG.node("connection", "port"), "25565")));
         initCommands();
         initWorlds();
+
+        // Init Redis
+        REDIS = new Jedis(
+                getOrSetDefault(CONFIG.node("database", "redis", "hostname"), "localhost"),
+                Integer.parseInt(getOrSetDefault(CONFIG.node("database", "redis", "port"), "6379"))
+        );
 
         // Add event listener for click event on NPCs
         for (NPC npc : NPC.spawnNPCs(HUB)) {
