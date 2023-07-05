@@ -52,4 +52,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/lightHub:latest
+          tags: ${{ github.actor }}/lighthub:latest
