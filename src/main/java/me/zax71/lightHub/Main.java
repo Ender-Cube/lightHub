@@ -1,6 +1,5 @@
 package me.zax71.lightHub;
 
-import dev.rollczi.litecommands.LiteCommands;
 import dev.rollczi.litecommands.minestom.LiteMinestomFactory;
 import me.zax71.lightHub.blocks.Sign;
 import me.zax71.lightHub.blocks.Skull;
@@ -10,7 +9,6 @@ import me.zax71.lightHub.listeners.PlayerLogin;
 import me.zax71.lightHub.utils.FullbrightDimension;
 import me.zax71.lightHub.utils.NPC;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventFilter;

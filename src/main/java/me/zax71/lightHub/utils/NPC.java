@@ -1,27 +1,19 @@
 package me.zax71.lightHub.utils;
 
-import net.kyori.adventure.sound.Sound;
+import me.zax71.lightHub.inventories.MapInventory;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.*;
 import net.minestom.server.entity.ai.GoalSelector;
-import net.minestom.server.entity.ai.target.ClosestEntityTarget;
 import net.minestom.server.entity.metadata.PlayerMeta;
 import net.minestom.server.event.entity.EntityAttackEvent;
 import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
-import net.minestom.server.sound.SoundEvent;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-
-import static me.zax71.lightHub.Main.REDIS;
-import static me.zax71.lightHub.Main.logger;
 
 // https://gist.github.com/iam4722202468/36630043ca89e786bb6318e296f822f8
 public final class NPC extends EntityCreature {
@@ -48,10 +40,10 @@ public final class NPC extends EntityCreature {
         meta.setHatEnabled(true);
         meta.setNotifyAboutChanges(true);
 
-        addAIGroup(
-                List.of(new LookAtPlayerGoal(this)),
-                List.of(new ClosestEntityTarget(this, 15, entity -> entity instanceof Player))
-        );
+//        addAIGroup(
+//                List.of(new LookAtPlayerGoal(this)),
+//                List.of(new ClosestEntityTarget(this, 15, entity -> entity instanceof Player))
+//        );
 
         setInstance(instance, spawn);
     }
@@ -59,22 +51,12 @@ public final class NPC extends EntityCreature {
     public void handle(@NotNull EntityAttackEvent event) {
         if (event.getTarget() != this) return;
         if (!(event.getEntity() instanceof Player player)) return;
-
-        player.playSound(Sound.sound()
-                .type(SoundEvent.BLOCK_NOTE_BLOCK_PLING)
-                .pitch(2)
-                .build(), event.getTarget());
         onClick.accept(player);
     }
 
     public void handle(@NotNull PlayerEntityInteractEvent event) {
         if (event.getTarget() != this) return;
         if (event.getHand() != Player.Hand.MAIN) return; // Prevent duplicating event
-
-        event.getEntity().playSound(Sound.sound()
-                .type(SoundEvent.BLOCK_NOTE_BLOCK_PLING)
-                .pitch(2)
-                .build(), event.getTarget());
         onClick.accept(event.getEntity());
     }
 
@@ -132,26 +114,14 @@ public final class NPC extends EntityCreature {
         }
     }
 
-    private static void sendToMap(Player player, String map) {
-
-        String channel = "endercube/proxy/map/switch";
-        Map<String, String> payload = new HashMap<>();
-        payload.put("player", player.getUuid().toString());
-        payload.put("map", map);
-
-        REDIS.publish(channel, new JSONObject(payload).toString());
-        
-        logger.info("Sent" + new JSONObject(payload));
-        logger.info("Sent " + player.getUsername() + " to " + map);
-    }
 
     public static List<NPC> spawnNPCs(@NotNull Instance instance) {
         return List.of(
                 new NPC("Parkour", PlayerSkin.fromUsername("CrimsonIsAkai"), instance, new Pos(0.5, 71, -5.5),
-                        player -> sendToMap(player, "easy-1")),
+                        player -> player.openInventory(MapInventory.getInventory())),
 
                 new NPC("Spleef", PlayerSkin.fromUsername("Notch"), instance, new Pos(-2.5, 71, -5.5),
-                        player -> sendToMap(player, "spleef"))
+                        player -> player.sendMessage("Sorry, Spleef is not available yet"))
         );
     }
 }
