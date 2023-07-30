@@ -248,7 +248,6 @@ public class MapInventory {
 
         REDIS.publish(channel, new JSONObject(payload).toString());
 
-        logger.info("Sent" + new JSONObject(payload));
         logger.info("Sent " + player.getUsername() + " to " + mapName);
     }
 

@@ -4,6 +4,7 @@ import me.zax71.lightHub.utils.ConfigUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
@@ -33,6 +34,9 @@ public class PlayerLogin implements EventListener<PlayerLoginEvent> {
         Component playerJoinMessage = player.getName().append(Component.text(" joined the server")).color(NamedTextColor.YELLOW);
         Audiences.players().sendMessage(playerJoinMessage);
         logger.info(ANSIComponentSerializer.ansi().serialize(playerJoinMessage));
+
+        // Set team
+        player.setTeam(MinecraftServer.getTeamManager().getTeam("noCollision"));
         return Result.SUCCESS;
     }
 }
