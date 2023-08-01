@@ -47,4 +47,4 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/lighthub:latest
-          platforms: linux/amd64,linux/arm64/v8
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
