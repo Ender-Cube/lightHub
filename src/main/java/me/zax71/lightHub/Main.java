@@ -8,6 +8,7 @@ import me.zax71.lightHub.listeners.PlayerBlockBreak;
 import me.zax71.lightHub.listeners.PlayerLogin;
 import me.zax71.lightHub.utils.FullbrightDimension;
 import me.zax71.lightHub.utils.NPC;
+import net.hollowcube.polar.PolarLoader;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
@@ -18,10 +19,10 @@ import net.minestom.server.event.entity.EntityAttackEvent;
 import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
-import net.minestom.server.instance.AnvilLoader;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.network.packet.server.play.TeamsPacket;
 import net.minestom.server.utils.NamespaceID;
+import net.minestom.server.world.biomes.Biome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -29,8 +30,8 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import redis.clients.jedis.Jedis;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -103,8 +104,16 @@ public class Main {
 
     public static Path getPath(String path) {
         try {
-            return Path.of(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
-                    .toURI()).getPath()).getParent().resolve(path);
+            return Path.of(
+                            new File(
+                                    Main.class
+                                            .getProtectionDomain()
+                                            .getCodeSource()
+                                            .getLocation()
+                                            .toURI()
+                            ).getPath()
+                    ).getParent()
+                    .resolve(path);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -118,18 +127,31 @@ public class Main {
     }
 
     private static void initWorlds() {
+
+        // Register minecraft:the_void
+        MinecraftServer.getBiomeManager().addBiome(Biome
+                .builder()
+                .name(NamespaceID.from("minecraft:the_void"))
+                .build()
+        );
+
         // Fail and stop server if hub doesn't exist
-        if (!Files.exists(getPath("config/worlds/hub"))) {
-            logger.error("Missing HUB world, please place an Anvil world in ./config/worlds/hub and restart the server");
+        if (!getPath("config/worlds/hub.polar").toFile().exists()) {
+            logger.error("Missing hub world, please place a Polar world at ./config/worlds/hub.polar and restart the server");
             MinecraftServer.stopCleanly();
             return;
         }
 
-        // Load hub if it exists
-        HUB = MinecraftServer.getInstanceManager().createInstanceContainer(
-                FullbrightDimension.INSTANCE,
-                new AnvilLoader(getPath("config/worlds/hub"))
-        );
+        // Load hub now we know it exists
+        try {
+            HUB = MinecraftServer.getInstanceManager().createInstanceContainer(
+                    FullbrightDimension.INSTANCE,
+                    new PolarLoader(getPath("config/worlds/hub.polar"))
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        logger.info("Loaded Hub world");
         HUB.setTimeRate(0);
     }
 
