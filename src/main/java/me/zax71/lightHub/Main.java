@@ -6,6 +6,7 @@ import me.zax71.lightHub.blocks.Skull;
 import me.zax71.lightHub.commands.arguments.PlayerArgument;
 import me.zax71.lightHub.listeners.PlayerBlockBreak;
 import me.zax71.lightHub.listeners.PlayerLogin;
+import me.zax71.lightHub.listeners.PlayerMove;
 import me.zax71.lightHub.utils.FullbrightDimension;
 import me.zax71.lightHub.utils.NPC;
 import net.hollowcube.polar.PolarLoader;
@@ -41,11 +42,9 @@ import static me.zax71.lightHub.utils.ConfigUtils.initConfig;
 public class Main {
     public static InstanceContainer HUB;
     public static CommentedConfigurationNode CONFIG;
-
     public static HoconConfigurationLoader LOADER;
     public static final Logger logger = LoggerFactory.getLogger(Main.class);
     public static Jedis REDIS;
-
 
     public static void main(String[] args) {
         initConfig();
@@ -57,6 +56,7 @@ public class Main {
         EventNode<Event> entityNode = EventNode.type("listeners", EventFilter.ALL);
         entityNode
                 .addListener(new PlayerLogin())
+                .addListener(new PlayerMove())
                 .addListener(new PlayerBlockBreak());
         globalEventHandler.addChild(entityNode);
 
