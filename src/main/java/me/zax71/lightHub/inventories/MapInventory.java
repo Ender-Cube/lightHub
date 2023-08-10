@@ -24,8 +24,6 @@ import static me.zax71.lightHub.Main.REDIS;
 import static me.zax71.lightHub.Main.logger;
 
 public class MapInventory {
-
-    // private static MapInventory INSTANCE;
     private final Inventory inventory;
     private final int[] mapSlots = new int[]{10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34};
 
@@ -90,54 +88,20 @@ public class MapInventory {
         }
     }
 
-    private ItemStack easyMap(int i) {
+    private ItemStack getMapItem(String difficulty, int i) {
+
         List<ItemStack> maps = getParkourMapsFromRedis()
                 .stream()
-                .filter(obj -> Objects.equals(obj.get("difficulty"), "easy"))
+                .filter(obj -> Objects.equals(obj.get("difficulty"), difficulty))
                 .map(obj -> ItemStack
                         .of(Objects.requireNonNull(Material.fromNamespaceId(obj.get("materialType"))))
                         .withDisplayName(MiniMessage.miniMessage().deserialize(obj.get("materialDisplayName")))
                         .withTag(Tag.String("map"), obj.get("name"))
+                        .withTag(Tag.Integer("order"), Integer.valueOf(obj.get("order")))
                 )
+                .sorted(Comparator.comparing((ItemStack item) -> item.getTag(Tag.Integer("order"))))
                 .toList();
 
-        // Return the ItemStack if i is in bounds, else return AIR
-        if (i < maps.size()) {
-            return maps.get(i);
-        } else {
-            return ItemStack.AIR;
-        }
-    }
-
-    private ItemStack mediumMap(int i) {
-        List<ItemStack> maps = getParkourMapsFromRedis()
-                .stream()
-                .filter(obj -> Objects.equals(obj.get("difficulty"), "medium"))
-                .map(obj -> ItemStack
-                        .of(Objects.requireNonNull(Material.fromNamespaceId(obj.get("materialType"))))
-                        .withDisplayName(MiniMessage.miniMessage().deserialize(obj.get("materialDisplayName")))
-                        .withTag(Tag.String("map"), obj.get("name"))
-                )
-                .toList();
-
-        // Return the ItemStack if i is in bounds, else return AIR
-        if (i < maps.size()) {
-            return maps.get(i);
-        } else {
-            return ItemStack.AIR;
-        }
-    }
-
-    private ItemStack hardMap(int i) {
-        List<ItemStack> maps = getParkourMapsFromRedis()
-                .stream()
-                .filter(obj -> Objects.equals(obj.get("difficulty"), "hard"))
-                .map(obj -> ItemStack
-                        .of(Objects.requireNonNull(Material.fromNamespaceId(obj.get("materialType"))))
-                        .withDisplayName(MiniMessage.miniMessage().deserialize(obj.get("materialDisplayName")))
-                        .withTag(Tag.String("map"), obj.get("name"))
-                )
-                .toList();
 
         // Return the ItemStack if i is in bounds, else return AIR
         if (i < maps.size()) {
@@ -180,7 +144,7 @@ public class MapInventory {
                 // Add the maps to the slots they have a space in
                 int mapI = 0;
                 for (int slot : mapSlots) {
-                    inventory.setItemStack(slot, easyMap(mapI));
+                    inventory.setItemStack(slot, getMapItem("easy", mapI));
                     mapI++;
                 }
             }
@@ -193,7 +157,7 @@ public class MapInventory {
                 // Add the maps to the slots they have a space in
                 int mapI = 0;
                 for (int slot : mapSlots) {
-                    inventory.setItemStack(slot, mediumMap(mapI));
+                    inventory.setItemStack(slot, getMapItem("medium", mapI));
                     mapI++;
                 }
             }
@@ -206,7 +170,7 @@ public class MapInventory {
                 // Add the maps to the slots they have a space in
                 int mapI = 0;
                 for (int slot : mapSlots) {
-                    inventory.setItemStack(slot, hardMap(mapI));
+                    inventory.setItemStack(slot, getMapItem("hard", mapI));
                     mapI++;
                 }
             }
