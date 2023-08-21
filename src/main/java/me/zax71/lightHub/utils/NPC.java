@@ -117,7 +117,7 @@ public final class NPC extends EntityCreature {
 
     public static List<NPC> spawnNPCs(@NotNull Instance instance) {
         return List.of(
-                new NPC("Parkour", PlayerSkin.fromUsername("CrimsonIsAkai"), instance, new Pos(0.5, 71, -5.5),
+                new NPC("Parkour", PlayerSkin.fromUsername("Jeb_"), instance, new Pos(0.5, 71, -5.5),
                         player -> player.openInventory(MapInventory.getInventory())),
 
                 new NPC("Spleef", PlayerSkin.fromUsername("Notch"), instance, new Pos(-2.5, 71, -5.5),
