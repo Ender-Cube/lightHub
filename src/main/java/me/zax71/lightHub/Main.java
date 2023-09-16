@@ -5,6 +5,7 @@ import me.zax71.lightHub.blocks.Sign;
 import me.zax71.lightHub.blocks.Skull;
 import me.zax71.lightHub.commands.arguments.PlayerArgument;
 import me.zax71.lightHub.listeners.PlayerBlockBreak;
+import me.zax71.lightHub.listeners.PlayerDisconnect;
 import me.zax71.lightHub.listeners.PlayerLogin;
 import me.zax71.lightHub.listeners.PlayerMove;
 import me.zax71.lightHub.utils.FullbrightDimension;
@@ -56,6 +57,7 @@ public class Main {
         EventNode<Event> entityNode = EventNode.type("listeners", EventFilter.ALL);
         entityNode
                 .addListener(new PlayerLogin())
+                .addListener(new PlayerDisconnect())
                 .addListener(new PlayerMove())
                 .addListener(new PlayerBlockBreak());
         globalEventHandler.addChild(entityNode);
