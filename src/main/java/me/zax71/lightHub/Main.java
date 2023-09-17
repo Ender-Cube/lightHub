@@ -10,6 +10,7 @@ import me.zax71.lightHub.listeners.PlayerLogin;
 import me.zax71.lightHub.listeners.PlayerMove;
 import me.zax71.lightHub.utils.FullbrightDimension;
 import me.zax71.lightHub.utils.NPC;
+import net.endercube.EndercubeCommon.ConfigUtils;
 import net.hollowcube.polar.PolarLoader;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
@@ -28,22 +29,24 @@ import net.minestom.server.world.biomes.Biome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import redis.clients.jedis.Jedis;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Objects;
 
-import static me.zax71.lightHub.utils.ConfigUtils.getOrSetDefault;
-import static me.zax71.lightHub.utils.ConfigUtils.initConfig;
 
 public class Main {
-    public static InstanceContainer HUB;
-    public static CommentedConfigurationNode CONFIG;
-    public static HoconConfigurationLoader LOADER;
+    public static InstanceContainer hubInstance;
+    public static CommentedConfigurationNode config;
+    public static HoconConfigurationLoader loader;
+    public static ConfigUtils configUtils;
     public static final Logger logger = LoggerFactory.getLogger(Main.class);
     public static Jedis REDIS;
 
@@ -67,10 +70,10 @@ public class Main {
         MinecraftServer.getBlockManager().registerHandler(NamespaceID.from("minecraft:skull"), Skull::new);
 
 
-        switch (getOrSetDefault(CONFIG.node("connection", "mode"), "online")) {
+        switch (configUtils.getOrSetDefault(config.node("connection", "mode"), "online")) {
             case "online" -> MojangAuth.init();
             case "velocity" -> {
-                String velocitySecret = getOrSetDefault(CONFIG.node("connection", "velocitySecret"), "");
+                String velocitySecret = configUtils.getOrSetDefault(config.node("connection", "velocitySecret"), "");
                 if (!Objects.equals(velocitySecret, "")) {
                     VelocityProxy.enable(velocitySecret);
                 }
@@ -79,7 +82,7 @@ public class Main {
 
 
         // Start the server on port 25565
-        minecraftServer.start("0.0.0.0", Integer.parseInt(getOrSetDefault(CONFIG.node("connection", "port"), "25565")));
+        minecraftServer.start("0.0.0.0", Integer.parseInt(configUtils.getOrSetDefault(config.node("connection", "port"), "25565")));
         initCommands();
         initWorlds();
 
@@ -92,13 +95,13 @@ public class Main {
 
         // Init Redis
         REDIS = new Jedis(
-                getOrSetDefault(CONFIG.node("database", "redis", "hostname"), "localhost"),
-                Integer.parseInt(getOrSetDefault(CONFIG.node("database", "redis", "port"), "6379"))
+                configUtils.getOrSetDefault(config.node("database", "redis", "hostname"), "localhost"),
+                Integer.parseInt(configUtils.getOrSetDefault(config.node("database", "redis", "port"), "6379"))
         );
 
         // Add event listener for click event on NPCs
-        for (NPC npc : NPC.spawnNPCs(HUB)) {
-            HUB.eventNode().addListener(EntityAttackEvent.class, npc::handle)
+        for (NPC npc : NPC.spawnNPCs(hubInstance)) {
+            hubInstance.eventNode().addListener(EntityAttackEvent.class, npc::handle)
                     .addListener(PlayerEntityInteractEvent.class, npc::handle);
         }
 
@@ -119,6 +122,34 @@ public class Main {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void initConfig() {
+        // Create config directories
+        if (!Files.exists(getPath("config/worlds"))) {
+            logger.info("Creating configuration files");
+
+            try {
+                Files.createDirectories(getPath("config/worlds/"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        loader = HoconConfigurationLoader.builder()
+                .path(getPath("config/config.conf"))
+                .build();
+
+        try {
+            config = loader.load();
+        } catch (ConfigurateException e) {
+            logger.error("An error occurred while loading config.conf: " + e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            MinecraftServer.stopCleanly();
+        }
+
+        // Init ConfigUtils class
+        configUtils = new ConfigUtils(loader, config);
     }
 
     private static void initCommands() {
@@ -146,7 +177,7 @@ public class Main {
 
         // Load hub now we know it exists
         try {
-            HUB = MinecraftServer.getInstanceManager().createInstanceContainer(
+            hubInstance = MinecraftServer.getInstanceManager().createInstanceContainer(
                     FullbrightDimension.INSTANCE,
                     new PolarLoader(getPath("config/worlds/hub.polar"))
             );
@@ -154,7 +185,7 @@ public class Main {
             throw new RuntimeException(e);
         }
         logger.info("Loaded Hub world");
-        HUB.setTimeRate(0);
+        hubInstance.setTimeRate(0);
     }
 
 }

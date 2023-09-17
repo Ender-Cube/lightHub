@@ -1,6 +1,5 @@
 package me.zax71.lightHub.listeners;
 
-import me.zax71.lightHub.utils.ConfigUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
@@ -14,7 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static me.zax71.lightHub.Main.*;
+import static me.zax71.lightHub.Main.config;
+import static me.zax71.lightHub.Main.configUtils;
+import static me.zax71.lightHub.Main.hubInstance;
+import static me.zax71.lightHub.Main.logger;
 
 
 public class PlayerLogin implements EventListener<PlayerLoginEvent> {
@@ -26,8 +28,8 @@ public class PlayerLogin implements EventListener<PlayerLoginEvent> {
     @Override
     public @NotNull Result run(@NotNull PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        event.setSpawningInstance(HUB);
-        player.setRespawnPoint(Objects.requireNonNull(ConfigUtils.getPosFromConfig(CONFIG.node("spawnPoint"))));
+        event.setSpawningInstance(hubInstance);
+        player.setRespawnPoint(Objects.requireNonNull(configUtils.getPosFromConfig(config.node("spawnPoint"))));
         player.setGameMode(GameMode.ADVENTURE);
 
         // Tell players, and the log, that someone joined

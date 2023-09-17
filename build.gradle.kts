@@ -40,6 +40,9 @@ dependencies {
 
     // Redis (Jedis)
     implementation("redis.clients:jedis:4.3.0")
+
+    // Endercube common lib
+    implementation("com.github.ender-cube:endercubecommon:1e8da50caf")
 }
 
 java {

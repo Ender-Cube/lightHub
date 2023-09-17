@@ -8,11 +8,12 @@ import net.minestom.server.event.player.PlayerBlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 
-import static me.zax71.lightHub.Main.CONFIG;
-import static me.zax71.lightHub.utils.ConfigUtils.getOrSetDefault;
-import static me.zax71.lightHub.utils.ConfigUtils.saveConfig;
+import static me.zax71.lightHub.Main.config;
+import static me.zax71.lightHub.Main.configUtils;
 
-// Stops players from breaking blocks in all worlds
+/**
+ * Stops players from breaking blocks in all worlds
+ */
 public class PlayerBlockBreak implements EventListener<PlayerBlockBreakEvent> {
     @Override
     public @NotNull Class<PlayerBlockBreakEvent> eventType() {
@@ -22,7 +23,7 @@ public class PlayerBlockBreak implements EventListener<PlayerBlockBreakEvent> {
     @Override
     public @NotNull Result run(@NotNull PlayerBlockBreakEvent event) {
 
-        final ConfigurationNode protectionErrorNode = CONFIG.node("messages", "protectionError");
+        final ConfigurationNode protectionErrorNode = config.node("messages", "protectionError");
         Player player = event.getPlayer();
 
         // https://github.com/Minestom/Minestom/discussions/1596
@@ -30,11 +31,10 @@ public class PlayerBlockBreak implements EventListener<PlayerBlockBreakEvent> {
 
         // Send an error message
         Component message = MiniMessage.miniMessage().deserialize(
-                getOrSetDefault(protectionErrorNode, "<bold><red>Hey!</bold> <grey>Sorry, but you can't break that block here")
+                configUtils.getOrSetDefault(protectionErrorNode, "<bold><red>Hey!</bold> <grey>Sorry, but you can't break that block here")
         );
         player.sendMessage(message);
 
-        saveConfig();
         return Result.SUCCESS;
     }
 }
